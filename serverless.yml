@@ -1,7 +1,18 @@
 service: lambda-rest-api
 
 custom:
-  tableName: 'todos${self:provider.stage}'
+  tableName: 'todos-${self:provider.stage}'
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      heapInitial: 200m
+      heapMax: 1g
+      migrate: true
+      seed: true
+      convertEmptyValues: true
 
 provider:
   name: aws
@@ -19,8 +30,8 @@ provider:
         - dynamodb:DeleteItem
       Resource:
         - { "Fn:GetAtt": ["TodosDynamodDBTable", "Arn"] }
-    environment:
-      TODOS_TABLE: ${self:custom.tableName}
+  environment:
+    TODOS_TABLE: ${self:custom.tableName}
 
 functions:
   todo-app:
@@ -32,7 +43,8 @@ functions:
 resources:
   Resources:
     TodosDynamoDBTable:
-      Type: 'AWS:DynamoDB::Table'
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
       Properties:
         AttributeDefinitions:
           -
@@ -41,10 +53,10 @@ resources:
         KeySchema:
           -
             AttributeName: todoId
-            AttributeType: S
+            KeyType: HASH
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
         TableName: ${self:custom.tableName}
 
 plugins:
