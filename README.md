@@ -1,3 +1,11 @@
+# How to run
+
+	* set up npm and node js [https://www.npmjs.com/get-npm]
+	* set up serverless FW [`$ npm install -g serverless`]
+	* install npm modules bases on package json [`$ npm install`]
+	* install local dynamo db using serverless FW [`$ sls dynamodb install`]
+	* run application on local [`$ sls offline start --migrate`]   [3000 port for server and 8000 port for dynamo db]
+
 # References
 
 	* [serverless FW] https://keyholesoftware.com/2018/11/05/building-a-node-js-service-with-aws-lambda-dynamodb-and-serverless-framework/
